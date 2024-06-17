@@ -1,5 +1,8 @@
 name: Deploy
-on: push 
+
+on: push
+    
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -10,13 +13,16 @@ jobs:
 
       – name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-        
+
+      – name: Install Docker Compose
+        run: sudo curl -sSL https://github.com/docker/compose/releases/download/v2.3.3/docker-compose-`uname -s`-`uname -m` > docker-compose && chmod +x docker-compose && sudo mv docker-compose /usr/local/bin/
+
       – name: Build and push Docker images
         uses: docker/build-push-action@v3
         with:
-          context: .
           push: true
           tags: user/repo:latest
+          context:.
 
       – name: Run Docker Compose
         run: docker-compose up -d
